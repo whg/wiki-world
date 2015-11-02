@@ -1,6 +1,8 @@
 
 uniform vec2 offset;
-uniform float q = 0.5;
+uniform float q, radius;
+uniform float zoom;
+uniform vec2 window;
 
 const float PI = 3.1415;
 const float HC = 180.0/PI;
@@ -39,17 +41,21 @@ void main() {
 //    float q = lat2y(p.y);
 //    p.y = q;
     
-    float r = 180.0;
-    vec3 sphere_point = vec3(0.0, 0.0, r);
+//    float r = 180.0;
+    vec3 sphere_point = vec3(0.0, 0.0, radius);
     sphere_point = rotate(sphere_point, p.y, vec3(-1.0, 0.0, 0.0));
     sphere_point= rotate(sphere_point, p.x, vec3(0.0, 1.0, 0.0));
     
-    vec3 flat_point = vec3(p.x, lat2y(p.y), 0);
+    vec3 flat_point = vec3(p.x, lat2y(p.y), 69.0);
     
     vec3 point = mix(flat_point, sphere_point, vec3(q));
     
-    
+
 //    p.x = p.z < 0.0 ? 0.0 : p.x;
-    gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * vec4(point, 1.0);
-    gl_FrontColor = gl_Color;
+    vec4 col = gl_Color;
+    vec4 o = gl_ProjectionMatrix * gl_ModelViewMatrix * vec4(point, 1.0);
+    if (o.z > window.y - zoom - 180.0 - 69.0) col*= offset.y;
+
+    gl_Position = o;
+    gl_FrontColor = col;
 }

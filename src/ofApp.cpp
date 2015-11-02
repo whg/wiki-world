@@ -66,70 +66,16 @@ void ofApp::setup(){
 
     }
     
-//    std::string line;
-//    int i = 0;
-//    float x, y;
-//    int d = 180;
-//    float m = 2;
-//    while (std::getline(infile, line)) {
-//        vector<string> parts = ofSplitString(line, "|");
-//        if (parts.size() < 2) break;
-//        x = ofToFloat(trim(parts[0]));
-//        y = ofToFloat(trim(parts[1]));
-//        if (x > -d && x < d && y > -d && y < d) {
-//            points.push_back(ofVec2f(x*m, y*m));
-////            names.push_back(trim(parts[2]));
-//        }
-//
-////        if (i++ >= 100000) break;
-//        // process pair (a,b)
-//    }
-    cout << "read file " << points.size() << endl;
-    n = points.size();
-//    cout << points.size() << " points" << endl;
-//    for (auto v : points) {
-//        mesh.add
-//    }
-
-    
-//    ofRectangle bounds = ofRectangle(-d*m, -d*m, d*m*2, d*m*2);
-    
-    int pointCount = 255;
-    int seed = 33;
-    
-
-    cout << "computed voronoi" << endl;
-    
-//    vbo.setUsage(GL_STATIC_DRAW);
-    //mesh.addVertices(points);
-//    for(int i=0; i<cells.size(); i++) {
-//        for(int j=0; j<cells[i].pts.size(); j++) {
-//            ofPoint lastPt = cells[i].pts[cells[i].pts.size()-1];
-//            if(j > 0) {
-//                lastPt = cells[i].pts[j-1];
-//            }
-//            ofPoint thisPt = cells[i].pts[j];
-//            
-//            if(!isBorder(lastPt) || !isBorder(thisPt)) {
-////                ofDrawLine(lastPt, thisPt);
-//                mesh.addVertex(lastPt);
-//                mesh.addVertex(thisPt);
-//            }
-//        }
-//    }
-
-//    vbo.setMode(OF_PRIMITIVE_POINTS);
-    cout << "made mesh" << endl;
-    
     cam.setPosition(0, 0, 700);
 //    cam.setPosition(-192.449539, 84.9406509, 84.6877899);
-    cam.setTranslationKey('t');
+//    cam.setTranslationKey('t');
     
     ofSetVerticalSync(true);
 //    ofSetFrameRate(60);
   
     vbo.setVertexData(&points[0], points.size(), GL_STATIC_DRAW);
     cols.resize(points.size());
+    float n = points.size();
     for (int i = 0; i < points.size(); i++) {
 //        vbo.add
 //        vbo.addVertex(points[counter++]);
@@ -139,8 +85,13 @@ void ofApp::setup(){
     
     panel.setup("gui");
     panel.add(step.set("step", 100, 10, 500));
+    panel.add(q.set("q", 0, 0, 1));
+    panel.add(t.set("t", 0, 0, 1));
+    panel.add(radius.set("radius", 0, 0, 200));
+    panel.add(sphereAlpha.set("sphere alpha", 0, 0, 255));
+
     drawGui = true;
-    
+    blendMode = 1;
     shader.setupShaderFromFile(GL_FRAGMENT_SHADER, ofToDataPath("shader.frag"));
     shader.setupShaderFromFile(GL_VERTEX_SHADER, ofToDataPath("shader.vert"));
     shader.linkProgram();
@@ -155,13 +106,7 @@ void ofApp::update(){
 
     counter+= step;
     counter = MIN(counter, points.size());
-//    if (counter < points.size()) {
-//        for (int i = 0; i < STEP; i++) {
-//            mesh.addVertex(points[counter++]);
-//            mesh.addColor(ofFloatColor::fromHsb(counter/n , 1.0, 1.0, 0.4));
-//        }
-//
-//    }
+
 
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
 }
@@ -174,71 +119,36 @@ void ofApp::draw(){
         return;
     }
 
-
+    //ofEnableDepthTest();
     
     ofEnableAlphaBlending();
-
     ofEnableBlendMode(ofBlendMode(blendMode));
-//    voronoi.draw();
-    
-    // Or feel free to draw the voronoi diagram yourself:
-        
-//    ofSetLineWidth(0);
-//    ofFill();
-//    
-//    // Draw bounds
-//    ofSetColor(220);
-//    ofRect(bounds);
-//
-    
-//    ofBackground(255);
+
     cam.begin();
-
+    cout << cam.zoom << " " << mouseY << endl;
+    
+//    ofSetColor(255, sphereAlpha);
+//    ofDrawRectangle(0, 0, 0, ofGetWidth(), ofGetHeight());
+//    ofDrawSphere(0, 0, 0, radius);
+    
     shader.begin();
-
+    shader.setUniform2f("offset", mouseX, t);
+    shader.setUniform2f("window", ofGetWidth(), ofGetHeight());
+    shader.setUniform1f("zoom", cam.zoom);
     
-    shader.setUniform2f("offset", mouseX, mouseY);
-//    ofSetColor(0);
 
-//    ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-//    if (ofGetKeyPressed()) {
-////        vbo.draw(OF_MESH_POINTS);
-//    }
-//    else {
-//        mesh.draw(OF_MESH_WIREFRAME);
-//        vbo.draw(GL_POINTS, 0, int((float(mouseX) / ofGetWidth()) * points.size()));
-    vbo.draw(GL_POINTS, 0, counter);
-//        mesh.drawInstanced(OF_MESH_POINTS, int((mouseX / ofGetWidth()) * points.size()));
-//    }
-    
+    shader.setUniform1f("q", q);
+    shader.setUniform1f("radius", radius);
+    vbo.draw(GL_POINTS, 0, points.size());// counter);
+
     shader.end();
     cam.end();
 
 //    ofDrawBitmapString(names[counter], 10, 10);
     ofSetColor(255);
     ofDrawBitmapString(ofToString(counter) + " : " + ofToString(points.size()) , 10, 20);
-    
-//    for(int i=0; i<cells.size(); i++) {
-//        // Draw cell borders
-////        ofSetColor(120);
-//        for(int j=0; j<cells[i].pts.size(); j++) {
-//            ofPoint lastPt = cells[i].pts[cells[i].pts.size()-1];
-//            if(j > 0) {
-//                lastPt = cells[i].pts[j-1];
-//            }
-//            ofPoint thisPt = cells[i].pts[j];
-//            
-//            if(!isBorder(lastPt) || !isBorder(thisPt)) {
-//                ofDrawLine(lastPt, thisPt);
-//            }
-//        }
-//        
-//        // Draw cell points
-////        ofSetColor(180, 0, 0);
-////        ofFill();
-////        ofCircle(cells[i].pt, 2);
-//    }
 
+    ofDisableDepthTest();
     if (drawGui) panel.draw();
     
 }
@@ -276,14 +186,18 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-    cols.clear();
-    cols.resize(points.size());
-    for (int i = 0; i < points.size(); i++) {
-        //        vbo.add
-        //        vbo.addVertex(points[counter++]);
-        cols[i] = ofFloatColor::fromHsb(i/n, 0.8, 0.6, float(mouseX)/ofGetWidth());
+    if (button == 2) {
+        cols.clear();
+        cols.resize(points.size());
+        float n = points.size();
+        
+        for (int i = 0; i < points.size(); i++) {
+            //        vbo.add
+            //        vbo.addVertex(points[counter++]);
+            cols[i] = ofFloatColor::fromHsb(i/n, 0.8, 0.6, float(mouseX)/ofGetWidth());
+        }
+        vbo.setColorData(&cols[0], cols.size(), GL_STATIC_DRAW);
     }
-    vbo.setColorData(&cols[0], cols.size(), GL_STATIC_DRAW);
 
 }
 
