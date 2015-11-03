@@ -16,28 +16,29 @@ public:
     void mouseMoved(ofMouseEventArgs &args) {}
     void mouseDragged(ofMouseEventArgs &args) {
         
-        mouseDiff = lastMousePos - args;
+        mouseDiff =  args - lastMousePos;
         
-        if (firstDrag) {
-            if (abs(mouseDiff.x) > abs(mouseDiff.y)) {
-                rotationDirection = X;
-            }
-            else {
-                rotationDirection = Y;
-            }
-            //rotation = ofVec2f();
-            firstDrag = false;
+        if (inTranslate) {
+            translation+= mouseDiff;
         }
         
-        if (rotationDirection == X) {
-            rotation.y-= mouseDiff.x;
-            lastMousePos.x = args.x;
-        }
-        else if (rotationDirection == Y) {
+//        if (firstDrag) {
+//            if (abs(mouseDiff.x) > abs(mouseDiff.y)) {
+//                rotationDirection = X;
+//            }
+//            else {
+//                rotationDirection = Y;
+//            }
+//            //rotation = ofVec2f();
+//            firstDrag = false;
+//        }
+        
+        else {
+            rotation.y+= mouseDiff.x; 
             rotation.x-= mouseDiff.y;
-            lastMousePos.y = args.y;
         }
         
+        lastMousePos = ofVec2f(args);
         
     }
     void mousePressed(ofMouseEventArgs &args) {
@@ -45,6 +46,9 @@ public:
         lastMousePos.y = args.y;
         
         firstDrag = true;
+        
+        if (args.button == 1) inTranslate = true;
+        else inTranslate = false;
     }
     void mouseReleased(ofMouseEventArgs &args) {}
     void mouseScrolled(ofMouseEventArgs &args) {
@@ -59,11 +63,12 @@ public:
     
     void begin() {
         glPushMatrix();
-        glTranslatef(ofGetWidth() * 0.5, ofGetHeight() * 0.5, zoom);
+        glTranslatef(ofGetWidth() * 0.5 + translation.x, ofGetHeight() * 0.5 + translation.y, zoom);
         
 //        if (rotationDirection == X) {
+        glRotatef(rotation.x, 1, 0, 0);
+
             glRotatef(rotation.y, 0, 1, 0);
-            glRotatef(rotation.x, 1, 0, 0);
 //        }
 //        else if (rotationDirection == Y) {
 //            glRotatef(rotation.x, 1, 0, 0);
@@ -78,9 +83,9 @@ public:
     }
     
     float zoom;
-    ofVec2f rotation, lastMousePos, mouseDiff;
+    ofVec2f rotation, translation, lastMousePos, mouseDiff;
     RotationDirection rotationDirection;
-    bool firstDrag;
+    bool firstDrag, inTranslate;
 };
 
 class ofApp : public ofBaseApp{
@@ -89,6 +94,8 @@ private:
     vector<ofVec3f> points;
     vector<ofFloatColor> cols;
     vector<string> names;
+    
+    typedef enum { CUMULATIVE, NEW } ViewMode;
 
 public:
     void setup();
@@ -111,8 +118,15 @@ public:
     
     bool drawGui;
     ofxPanel panel;
-    ofParameter<int> step, sphereAlpha;
-    ofParameter<float> q, radius, t;
+    ofParameter<int> step, sphereAlpha, levelAmount, levels;
+    ofParameter<float> q, radius, t, blackScreen;
     
     ofShader shader;
+    
+    ofFbo fbo;
+    
+//    deque<ofVec3f> medians;
+    ofVec3f lastPoint;
+    ofMesh medians;
+    ViewMode viewMode;
 };
