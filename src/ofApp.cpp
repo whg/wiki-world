@@ -188,9 +188,7 @@ void ofApp::draw(){
     //int levels = 50;
     
 
-//    else if(viewMode == CUMULATIVE) {
-        vbo.draw(GL_POINTS, 0, counter);
-//    }
+
     
 //    ofSetColor(255, mouseX);
 //    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
@@ -201,6 +199,9 @@ void ofApp::draw(){
      //       ofSetColor(255, 0, 150, i/float(levels)*255);
             vbo.draw(GL_POINTS, MIN(MAX(counter - i * levelAmount, 0), points.size()),  levelAmount);//counter);
         }
+    }
+    else if(viewMode == CUMULATIVE) {
+        vbo.draw(GL_POINTS, 0, counter);
     }
     
     shader.end();
