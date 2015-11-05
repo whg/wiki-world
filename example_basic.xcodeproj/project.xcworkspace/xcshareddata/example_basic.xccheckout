@@ -30,19 +30,19 @@
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>252C6127C45A1F2D4943E6963066F98DFCDB451F</key>
-		<string>../../../../../addons/ofxTimecode</string>
+		<string>../../../addons/ofxTimecode</string>
 		<key>49ED704B24A08379C9709713E9A651DFA0CED0E3</key>
-		<string>../../../../../addons/ofxRange</string>
+		<string>../../../addons/ofxRange</string>
 		<key>65F0E57F9FBE704C78F412BB3A758052CBC46923</key>
-		<string>../../../../../addons/ofxAudioDecoder</string>
+		<string>../../../addons/ofxAudioDecoder</string>
 		<key>6B5D1DE462D521A98972DF70F1147E20268C546A</key>
-		<string>../../../../../addons/ofxTween</string>
+		<string>../../../addons/ofxTween</string>
 		<key>A6343E16BC2F648D0FEA647FB75CBADE0A25E0B8</key>
-		<string>../../../../../addons/ofxTextInputField</string>
+		<string>../../../addons/ofxTextInputField</string>
 		<key>C8FB7796727A63642D36E7F5FA243E7427B4703F</key>
 		<string>../..</string>
 		<key>E0CB4C1C2522C94E4D03AC595BB2CF0D7F09B508</key>
-		<string>../../../../../addons/ofxMSATimer</string>
+		<string>../../../addons/ofxMSATimer</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/whg/wiki-world.git</string>

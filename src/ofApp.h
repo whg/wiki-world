@@ -4,13 +4,15 @@
 
 #include "ofxGui.h"
 
+#include "ofxTimeline.h"
+
 class Cam {
 public:
     
     typedef enum { X, Y } RotationDirection;
     
     Cam(): zoom(0), rotation(0), firstDrag(false) {
-        ofRegisterMouseEvents(this);
+        //ofRegisterMouseEvents(this);
     }
     
     void mouseMoved(ofMouseEventArgs &args) {}
@@ -88,6 +90,12 @@ public:
     bool firstDrag, inTranslate;
 };
 
+inline bool ofVec3fSort (ofVec3f &i, ofVec3f &j) {
+    if (i.x == j.x) return i.y < j.y;
+    else return i.x < i.x;
+}
+
+
 class ofApp : public ofBaseApp{
 private:
 
@@ -129,4 +137,7 @@ public:
     ofVec3f lastPoint;
     ofMesh medians;
     ViewMode viewMode;
+    
+    ofxTimeline timeline;
+    
 };

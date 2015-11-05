@@ -55,10 +55,6 @@ void ofApp::setup(){
     ofVec3f v;
     float r = 180;
     for (int i = 0; i < num; i++) {
-//        points[i].x = output[0][i];
-//        points[i].y = output[1][i];
-//        points[i].y = output[1][i];
-//        points[i].x = (output[0][i]);
 
         if (output[0][i] < -180 && output[0][i] > 180) continue;
         
@@ -66,14 +62,6 @@ void ofApp::setup(){
         points[i].y = (output[0][i]);
 //        points[i].x = output[0][i];
 //        points[i].y = (output[1][i]);
-
-        
-//        v = ofVec3f(0, 0, r);
-//        v.rotate(output[0][i], ofVec3f(-1, 0, 0));
-//        v.rotate(output[1][i], ofVec3f(0, 1, 0));
-//        v.rotate(output[1][i], output[0][i], 0);
-//        points[i] = v;
-
     }
     
     cam.setPosition(0, 0, 700);
@@ -123,6 +111,25 @@ void ofApp::setup(){
 //    ofBackground(0);
     lastPoint = points[0];
     viewMode = CUMULATIVE;
+    
+    
+    timeline.setup();
+    timeline.setDurationInSeconds(120);
+    timeline.setFrameBased(true);
+    timeline.setFrameRate(60);
+    timeline.addCurves("counter", ofRange(0, points.size()), 0);
+    timeline.addCurves("x trans", ofRange(-100, 100), 0);
+    timeline.addCurves("y trans", ofRange(-25, 25), 0);
+    timeline.addCurves("zoom", ofRange(300, 500));
+    timeline.addCurves("blackScreen", ofRange(0, 300));
+    timeline.addCurves("sphereness", ofRange(0.0, 1.0));
+    timeline.addCurves("y rot", ofRange(0, 360));
+    timeline.addCurves("x rot", ofRange(-20, 20));
+    
+    timeline.setSpacebarTogglePlay(true);
+    timeline.play();
+    
+
 }
 
 //--------------------------------------------------------------
@@ -139,49 +146,43 @@ void ofApp::update(){
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
     
     //cam.rotation.y-= 0.5;
+    
+    cam.rotation.y = timeline.getValue("y rot");
+    cam.rotation.x = timeline.getValue("x rot");
+    cam.translation.x = timeline.getValue("x trans");
+    cam.translation.y = timeline.getValue("y trans");
+    cam.zoom = timeline.getValue("zoom");
 }
 
-bool ofVec3fSort (ofVec3f &i, ofVec3f &j) {
-    if (i.x == j.x) return i.y < j.y;
-    else return i.x < i.x;
-}
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-   ofBackground(0);
+    ofBackground(0);
+    
     if (counter < 0) {
         counter+= 10;
         return;
     }
     
-    
-
     //ofEnableDepthTest();
     
 //    fbo.begin();
     
     ofEnableAlphaBlending();
     ofEnableBlendMode(ofBlendMode(blendMode));
-    
-//    glColor4f(0, 0, 0, ofMap(mouseX, 0, ofGetWidth(), 0, 1));
-//    ofSetColor(255, 2);
-//    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-    
+
     cam.begin();
-    cout << cam.zoom << " " << mouseY << endl;
-    
-//    ofSetColor(255, sphereAlpha);
-//    ofDrawRectangle(0, 0, 0, ofGetWidth(), ofGetHeight());
-//    ofDrawSphere(0, 0, 0, radius);
+
     
     shader.begin();
-    shader.setUniform2f("offset", mouseX, blackScreen);
+    //shader.setUniform2f("offset", mouseX, mouseY);
     shader.setUniform2f("window", ofGetWidth(), ofGetHeight());
-    shader.setUniform1f("zoom", cam.zoom);
+    shader.setUniform1f("zoom", timeline.getValue("zoom"));
     
-
-    shader.setUniform1f("q", q);
-    shader.setUniform1f("radius", radius);
+    shader.setUniform1f("blackScreen", timeline.getValue("blackScreen"));
+    
+    shader.setUniform1f("q", timeline.getValue("sphereness"));
+    shader.setUniform1f("radius", 100);
     
 //    counter = int(ofMap(mouseX, 0, ofGetWidth(), 0, points.size(), true));
     
@@ -193,6 +194,7 @@ void ofApp::draw(){
 //    ofSetColor(255, mouseX);
 //    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
     
+    counter = timeline.getValue("counter");
     
     if (viewMode == NEW) {
         for (int i = 0; i < levels; i++) {
@@ -200,9 +202,12 @@ void ofApp::draw(){
             vbo.draw(GL_POINTS, MIN(MAX(counter - i * levelAmount, 0), points.size()),  levelAmount);//counter);
         }
     }
-    else if(viewMode == CUMULATIVE) {
+    shader.setUniform2f("offset", mouseX, mouseY);
+
+    if(viewMode == CUMULATIVE) {
         vbo.draw(GL_POINTS, 0, counter);
     }
+    
     
     shader.end();
     
@@ -259,6 +264,9 @@ void ofApp::draw(){
     ofDisableDepthTest();
     if (drawGui) panel.draw();
     
+    ofSetColor(255);
+    timeline.draw();
+    
 }
 
 
@@ -275,8 +283,11 @@ void ofApp::keyPressed(int key){
         blendMode = key - '0';
     }
 
-    if (key == ' ') drawGui = !drawGui;
-    
+    if (key == 't') {
+//        drawGui = !drawGui;
+        timeline.toggleShow();
+
+    }
     if (key == 'z') viewMode = CUMULATIVE;
     else if (key == 'x') viewMode = NEW;
 }
