@@ -46,22 +46,22 @@ void ofApp::setup(){
     
     std::ifstream infile(ofToDataPath("point_file").c_str());
     
-    vector< vector<float> > output;
-    read_fdata("/Users/itg/Desktop/mysql_wiki_order_id.fdata", output);
-//    read_fdata("/Users/itg/Desktop/wiki_pages_pg.fdata", output);
-
-    int num = output[0].size();
+    read_fdata("/Users/itg/Desktop/mysql_wiki_order_id_with_id.fdata", mainData);
+//    read_fdata("/Users/itg/Desktop/wiki_pages_pg.fdata", mainData);
+    
+    
+    int num = mainData[0].size();
     points.resize(num);
     ofVec3f v;
     float r = 180;
     for (int i = 0; i < num; i++) {
 
-        if (output[0][i] < -180 && output[0][i] > 180) continue;
+        if (mainData[0][i] < -180 && mainData[0][i] > 180) continue;
         
-        points[i].x = output[1][i];
-        points[i].y = (output[0][i]);
-//        points[i].x = output[0][i];
-//        points[i].y = (output[1][i]);
+        points[i].x = mainData[1][i];
+        points[i].y = (mainData[0][i]);
+//        points[i].x = mainData[0][i];
+//        points[i].y = (mainData[1][i]);
     }
     
     cam.setPosition(0, 0, 700);
@@ -129,7 +129,16 @@ void ofApp::setup(){
     timeline.setSpacebarTogglePlay(true);
     timeline.play();
     
+    loadAudio();
+    
+    //.load("/Users/itg/Desktop/oggs/wavs/44.1k/Zh-Hunan.wav");
+    ofSoundStreamSetup(2, 0, 44100, 512, 2);
+}
 
+void ofApp::exit() {
+    for (auto &pair : audioSamples) {
+        delete pair.second;
+    }
 }
 
 //--------------------------------------------------------------
@@ -152,6 +161,7 @@ void ofApp::update(){
     cam.translation.x = timeline.getValue("x trans");
     cam.translation.y = timeline.getValue("y trans");
     cam.zoom = timeline.getValue("zoom");
+
 }
 
 
@@ -227,7 +237,7 @@ void ofApp::draw(){
     
     sum /= levelAmount;
     ofSetColor(255, 0, 150, mouseX);
-    cout << part.size() << endl;
+//    cout << part.size() << endl;
     ofVec3f median = part[part.size()/2];
     
     float mindist = 10000;
@@ -266,6 +276,31 @@ void ofApp::draw(){
     
     ofSetColor(255);
     timeline.draw();
+    
+    static int lastCounter = 0;
+    
+    vector<float> &ids = mainData[2];
+    for (auto &pair : soundIds) {
+        int id = pair.first;
+        if (id < counter) {
+            if (audioSamples[pair.second] != NULL && samplesToPlay.count(id) == 0) {
+                samplesToPlay[id] = audioSamples[pair.second];
+//            cout << "added " << pair.first << endl;
+            }
+        }
+    }
+    
+    for (auto &pair : samplesToPlay) {
+        
+        if (pair.second == NULL || pair.second->hasFinished) {
+            samplesToPlay.erase(pair.first);
+
+        }
+    }
+    
+    cout << samplesToPlay.size() << " samples to play\n";
+    
+    lastCounter = counter;
     
 }
 
@@ -309,6 +344,8 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
+    
+
     if (button == 2) {
         cols.clear();
         cols.resize(points.size());
@@ -321,7 +358,62 @@ void ofApp::mousePressed(int x, int y, int button){
         }
         vbo.setColorData(&cols[0], cols.size(), GL_STATIC_DRAW);
     }
+    
+   // sample.reset();
 
+}
+
+void ofApp::audioOut( float * output, int bufferSize, int nChannels ) {
+    
+    static float v;
+    for (int i = 0; i < bufferSize; i++) {
+      //  v = sample.playOnce();
+        v = 0;
+
+        for (auto &pair : samplesToPlay) {
+            ofxMaxiSample *sample = pair.second;
+            if (sample != NULL) {
+                v+= sample->playOnce() * 0.1;
+            }
+        }
+        //if (samplesToPlay.size() > 0) v = samplesToPlay[0]->playOnce();
+        
+        output[i*nChannels] = output[i*nChannels+1]= v;
+    }
+}
+
+#include <dirent.h>
+
+void ofApp::loadAudio() {
+
+    
+    ifstream infile("/Users/itg/Desktop/sound_ids");
+    string line;
+    while(getline(infile, line)) {
+        vector<string> parts = ofSplitString(line, ",");
+        int id = ofToInt(parts[1]);
+        soundIds[id] = parts[0];
+    }
+
+    
+    string path = "/Users/itg/Desktop/oggs/wavs/44.1k/";
+    DIR *dir;
+    struct dirent *ent;
+    if ((dir = opendir (path.c_str())) != NULL) {
+                while ((ent = readdir (dir)) != NULL) {
+            string file = ent->d_name;
+            if(file.find(".wav")!=-1) {
+                ofxMaxiSample *sample = new maxiSample();
+                sample->load(path + file);
+                audioSamples[file] = sample;
+                
+            }
+        }
+        closedir (dir);
+    } else {
+        cout << "Error, could not load directory" << endl;
+    }
+    cout << "a" << endl;
 }
 
 //--------------------------------------------------------------

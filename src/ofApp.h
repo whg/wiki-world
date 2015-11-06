@@ -5,6 +5,7 @@
 #include "ofxGui.h"
 
 #include "ofxTimeline.h"
+#include "ofxMaxim.h"
 
 class Cam {
 public:
@@ -109,6 +110,7 @@ public:
     void setup();
     void update();
     void draw();
+    void exit();
 
     void keyPressed(int key);
     void keyReleased(int key);
@@ -119,7 +121,13 @@ public:
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
+    
+    void audioOut( float * output, int bufferSize, int nChannels );
 
+    
+    vector< vector<float> > mainData;
+
+    
     ofVbo vbo;
     Cam cam;
     int blendMode;
@@ -139,5 +147,12 @@ public:
     ViewMode viewMode;
     
     ofxTimeline timeline;
+    
+    map<string, ofxMaxiSample*> audioSamples;
+    map<int, string> soundIds;
+    map<int, ofxMaxiSample*> samplesToPlay;
+
+    void loadAudio();
+    
     
 };

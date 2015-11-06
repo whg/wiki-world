@@ -87,6 +87,14 @@
 		72DD5B7C1BEA21BE00C1C9E3 /* audiodecodercoreaudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72DD5B741BEA21BE00C1C9E3 /* audiodecodercoreaudio.cpp */; };
 		72DD5B7D1BEA21BE00C1C9E3 /* license.md in Sources */ = {isa = PBXBuildFile; fileRef = 72DD5B751BEA21BE00C1C9E3 /* license.md */; };
 		72DD5B7E1BEA21BE00C1C9E3 /* readme.md in Sources */ = {isa = PBXBuildFile; fileRef = 72DD5B761BEA21BE00C1C9E3 /* readme.md */; };
+		72E8C1841BECD9D800773E8D /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72E8C1711BECD9D800773E8D /* fft.cpp */; };
+		72E8C1851BECD9D800773E8D /* maxiAtoms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72E8C1731BECD9D800773E8D /* maxiAtoms.cpp */; };
+		72E8C1861BECD9D800773E8D /* maxiBark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72E8C1751BECD9D800773E8D /* maxiBark.cpp */; };
+		72E8C1871BECD9D800773E8D /* maxiFFT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72E8C1771BECD9D800773E8D /* maxiFFT.cpp */; };
+		72E8C1881BECD9D800773E8D /* maxiGrains.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72E8C1791BECD9D800773E8D /* maxiGrains.cpp */; };
+		72E8C1891BECD9D800773E8D /* maxiMFCC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72E8C17B1BECD9D800773E8D /* maxiMFCC.cpp */; };
+		72E8C18A1BECD9D800773E8D /* maximilian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72E8C17D1BECD9D800773E8D /* maximilian.cpp */; };
+		72E8C18B1BECD9D800773E8D /* stb_vorbis.c in Sources */ = {isa = PBXBuildFile; fileRef = 72E8C1801BECD9D800773E8D /* stb_vorbis.c */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -314,6 +322,25 @@
 		72DD5B751BEA21BE00C1C9E3 /* license.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = license.md; sourceTree = "<group>"; };
 		72DD5B761BEA21BE00C1C9E3 /* readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
 		72DD5B781BEA21BE00C1C9E3 /* ofxAudioDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxAudioDecoder.h; sourceTree = "<group>"; };
+		72E8C16F1BECD9D800773E8D /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = install.xml; sourceTree = "<group>"; };
+		72E8C1711BECD9D800773E8D /* fft.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fft.cpp; sourceTree = "<group>"; };
+		72E8C1721BECD9D800773E8D /* fft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fft.h; sourceTree = "<group>"; };
+		72E8C1731BECD9D800773E8D /* maxiAtoms.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = maxiAtoms.cpp; sourceTree = "<group>"; };
+		72E8C1741BECD9D800773E8D /* maxiAtoms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = maxiAtoms.h; sourceTree = "<group>"; };
+		72E8C1751BECD9D800773E8D /* maxiBark.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = maxiBark.cpp; sourceTree = "<group>"; };
+		72E8C1761BECD9D800773E8D /* maxiBark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = maxiBark.h; sourceTree = "<group>"; };
+		72E8C1771BECD9D800773E8D /* maxiFFT.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = maxiFFT.cpp; sourceTree = "<group>"; };
+		72E8C1781BECD9D800773E8D /* maxiFFT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = maxiFFT.h; sourceTree = "<group>"; };
+		72E8C1791BECD9D800773E8D /* maxiGrains.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = maxiGrains.cpp; sourceTree = "<group>"; };
+		72E8C17A1BECD9D800773E8D /* maxiGrains.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = maxiGrains.h; sourceTree = "<group>"; };
+		72E8C17B1BECD9D800773E8D /* maxiMFCC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = maxiMFCC.cpp; sourceTree = "<group>"; };
+		72E8C17C1BECD9D800773E8D /* maxiMFCC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = maxiMFCC.h; sourceTree = "<group>"; };
+		72E8C17D1BECD9D800773E8D /* maximilian.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = maximilian.cpp; sourceTree = "<group>"; };
+		72E8C17E1BECD9D800773E8D /* maximilian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = maximilian.h; sourceTree = "<group>"; };
+		72E8C17F1BECD9D800773E8D /* sineTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sineTable.h; sourceTree = "<group>"; };
+		72E8C1801BECD9D800773E8D /* stb_vorbis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stb_vorbis.c; sourceTree = "<group>"; };
+		72E8C1811BECD9D800773E8D /* stb_vorbis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_vorbis.h; sourceTree = "<group>"; };
+		72E8C1831BECD9D800773E8D /* ofxMaxim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMaxim.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -1007,9 +1034,53 @@
 			path = src;
 			sourceTree = "<group>";
 		};
+		72E8C16E1BECD9D800773E8D /* ofxMaxim */ = {
+			isa = PBXGroup;
+			children = (
+				72E8C16F1BECD9D800773E8D /* install.xml */,
+				72E8C1701BECD9D800773E8D /* libs */,
+				72E8C1821BECD9D800773E8D /* src */,
+			);
+			name = ofxMaxim;
+			path = ../../../addons/ofxMaxim;
+			sourceTree = "<group>";
+		};
+		72E8C1701BECD9D800773E8D /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				72E8C1711BECD9D800773E8D /* fft.cpp */,
+				72E8C1721BECD9D800773E8D /* fft.h */,
+				72E8C1731BECD9D800773E8D /* maxiAtoms.cpp */,
+				72E8C1741BECD9D800773E8D /* maxiAtoms.h */,
+				72E8C1751BECD9D800773E8D /* maxiBark.cpp */,
+				72E8C1761BECD9D800773E8D /* maxiBark.h */,
+				72E8C1771BECD9D800773E8D /* maxiFFT.cpp */,
+				72E8C1781BECD9D800773E8D /* maxiFFT.h */,
+				72E8C1791BECD9D800773E8D /* maxiGrains.cpp */,
+				72E8C17A1BECD9D800773E8D /* maxiGrains.h */,
+				72E8C17B1BECD9D800773E8D /* maxiMFCC.cpp */,
+				72E8C17C1BECD9D800773E8D /* maxiMFCC.h */,
+				72E8C17D1BECD9D800773E8D /* maximilian.cpp */,
+				72E8C17E1BECD9D800773E8D /* maximilian.h */,
+				72E8C17F1BECD9D800773E8D /* sineTable.h */,
+				72E8C1801BECD9D800773E8D /* stb_vorbis.c */,
+				72E8C1811BECD9D800773E8D /* stb_vorbis.h */,
+			);
+			path = libs;
+			sourceTree = "<group>";
+		};
+		72E8C1821BECD9D800773E8D /* src */ = {
+			isa = PBXGroup;
+			children = (
+				72E8C1831BECD9D800773E8D /* ofxMaxim.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				72E8C16E1BECD9D800773E8D /* ofxMaxim */,
 				72DD5B5A1BEA21BE00C1C9E3 /* ofxAudioDecoder */,
 				72DD5B021BEA20F700C1C9E3 /* ofxXmlSettings */,
 				72DD5AEA1BEA20E000C1C9E3 /* ofxTimecode */,
@@ -1197,6 +1268,7 @@
 			files = (
 				72DD5A391BEA207800C1C9E3 /* ofxTLBangs.cpp in Sources */,
 				72DD5B7E1BEA21BE00C1C9E3 /* readme.md in Sources */,
+				72E8C1841BECD9D800773E8D /* fft.cpp in Sources */,
 				72DD5A401BEA207800C1C9E3 /* ofxTLFlags.cpp in Sources */,
 				72DA66C31BE796C100B18995 /* ofxLabel.cpp in Sources */,
 				72DD5ADC1BEA20B000C1C9E3 /* ofxEasingSine.cpp in Sources */,
@@ -1209,12 +1281,15 @@
 				72DD5A471BEA207800C1C9E3 /* ofxTLPage.cpp in Sources */,
 				72DD5A451BEA207800C1C9E3 /* ofxTLKeyframes.cpp in Sources */,
 				72DD5A371BEA207800C1C9E3 /* ofxTimeline.cpp in Sources */,
+				72E8C1871BECD9D800773E8D /* maxiFFT.cpp in Sources */,
+				72E8C18B1BECD9D800773E8D /* stb_vorbis.c in Sources */,
 				72DD5A3C1BEA207800C1C9E3 /* ofxTLColorTrack.cpp in Sources */,
 				72DD5A491BEA207800C1C9E3 /* ofxTLSwitches.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				72DD5A461BEA207800C1C9E3 /* ofxTLLFO.cpp in Sources */,
 				72DD5AC61BEA20B000C1C9E3 /* ofxMSATimer.cpp in Sources */,
 				72DD5AD41BEA20B000C1C9E3 /* ofxEasingCirc.cpp in Sources */,
+				72E8C1881BECD9D800773E8D /* maxiGrains.cpp in Sources */,
 				72DD5A4C1BEA207800C1C9E3 /* ofxTLTrackHeader.cpp in Sources */,
 				72DD5ACA1BEA20B000C1C9E3 /* ofxThreadedImageLoader.cpp in Sources */,
 				72DD5AD51BEA20B000C1C9E3 /* ofxEasingCubic.cpp in Sources */,
@@ -1249,16 +1324,20 @@
 				72DD5AD61BEA20B000C1C9E3 /* ofxEasingElastic.cpp in Sources */,
 				72DD5A4B1BEA207800C1C9E3 /* ofxTLTrack.cpp in Sources */,
 				72DD5ADD1BEA20B000C1C9E3 /* ofxTween.cpp in Sources */,
+				72E8C1851BECD9D800773E8D /* maxiAtoms.cpp in Sources */,
 				72DD5A441BEA207800C1C9E3 /* ofxTLInOut.cpp in Sources */,
 				72DD5B7D1BEA21BE00C1C9E3 /* license.md in Sources */,
 				72DD5A421BEA207800C1C9E3 /* ofxTLImageSequenceFrame.cpp in Sources */,
 				72DD5B0C1BEA20F700C1C9E3 /* tinyxmlerror.cpp in Sources */,
+				72E8C1861BECD9D800773E8D /* maxiBark.cpp in Sources */,
 				72DD5A351BEA207800C1C9E3 /* ofxHotKeys_impl_win.cpp in Sources */,
+				72E8C18A1BECD9D800773E8D /* maximilian.cpp in Sources */,
 				72DD5ADA1BEA20B000C1C9E3 /* ofxEasingQuart.cpp in Sources */,
 				72DA66C61BE796C100B18995 /* ofxSliderGroup.cpp in Sources */,
 				72DD5AD91BEA20B000C1C9E3 /* ofxEasingQuad.cpp in Sources */,
 				72DA66C21BE796C100B18995 /* ofxGuiGroup.cpp in Sources */,
 				72DD5AD71BEA20B000C1C9E3 /* ofxEasingExpo.cpp in Sources */,
+				72E8C1891BECD9D800773E8D /* maxiMFCC.cpp in Sources */,
 				72DD5A3A1BEA207800C1C9E3 /* ofxTLCameraTrack.cpp in Sources */,
 				72DD5A341BEA207800C1C9E3 /* ofxHotKeys_impl_mac.mm in Sources */,
 				72DD5AD81BEA20B000C1C9E3 /* ofxEasingLinear.cpp in Sources */,
