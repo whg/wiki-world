@@ -82,7 +82,7 @@ void ofApp::setup(){
     vbo.setColorData(&cols[0], cols.size(), GL_STATIC_DRAW);
     
     panel.setup("gui");
-    panel.add(step.set("step", 100, 10, 500));
+    panel.add(step.set("step", 2, 1, 100));
     panel.add(levelAmount.set("level amount", 100, 10, 500));
     panel.add(levels.set("levels", 100, 10, 200));
 
@@ -92,7 +92,7 @@ void ofApp::setup(){
     panel.add(sphereAlpha.set("sphere alpha", 0, 0, 255));
     panel.add(blackScreen.set("screen", 600, 0, 600));
 
-    drawGui = true;
+    drawGui = false;
     blendMode = 1;
     shader.setupShaderFromFile(GL_FRAGMENT_SHADER, ofToDataPath("shader.frag"));
     shader.setupShaderFromFile(GL_VERTEX_SHADER, ofToDataPath("shader.vert"));
@@ -114,8 +114,8 @@ void ofApp::setup(){
     
     
     timeline.setup();
-    timeline.setDurationInSeconds(600);
-    timeline.setFrameBased(true);
+    timeline.setDurationInSeconds(100);
+    timeline.setFrameBased(false);
     timeline.setFrameRate(60);
     timeline.addCurves("counter", ofRange(0, points.size()), 0);
     timeline.addCurves("x trans", ofRange(-100, 100), 0);
@@ -128,6 +128,9 @@ void ofApp::setup(){
     
     timeline.setSpacebarTogglePlay(true);
     timeline.play();
+    timeline.hide();
+
+    counter = 0;
     
     loadAudio();
     
@@ -209,13 +212,14 @@ void ofApp::draw(){
     
     counter = timeline.getValue("counter");
     
+    
     if (viewMode == NEW) {
         for (int i = 0; i < levels; i++) {
      //       ofSetColor(255, 0, 150, i/float(levels)*255);
             vbo.draw(GL_POINTS, MIN(MAX(counter - i * levelAmount, 0), points.size()),  levelAmount);//counter);
         }
     }
-    shader.setUniform2f("offset", mouseX, mouseY);
+    shader.setUniform2f("offset", mouseX, 35);
 
     if(viewMode == CUMULATIVE) {
         vbo.draw(GL_POINTS, 0, counter);
@@ -280,25 +284,45 @@ void ofApp::draw(){
     ofSetColor(255);
     timeline.draw();
     
-    static int lastId = 0;
+    static int lastId = 0, lastCounter = 0;
     
     audioMutex.lock();
     
     vector<float> &ids = mainData[2];
     int currentId = ids[counter];
     
-    printf("looking in between %d : %d", lastId, currentId);
+    //printf("looking in between %d : %d\n", lastId, currentId);
     
+    static float timeNow, addedAt = 0;
+    timeNow = ofGetElapsedTimef();
     
     int tried = 0, placed = 0;
     for (auto &pair : soundIds) {
         int id = pair.first;
         if (id < currentId && id > lastId) {
-            if (audioSamples[pair.second] != NULL && samplesToPlay.count(id) == 0) {
-                if (ofRandom(100) > 99 || true) {
+            if (audioSamples.count(pair.second) > 0 && samplesToPlay.count(id) == 0) {
+                if (timeNow - addedAt > 0.4) {
                     samplesToPlay[id] = audioSamples[pair.second];
+                    //cout << timeNow << " - " << addedAt << endl;
                     placed++;
+                    addedAt = timeNow;
+                    //cout << timeNow << " - " << addedAt << endl;
+
                 }
+                Sound sound;
+                sound.sample = audioSamples[pair.second];
+                sound.name = pair.second;
+                sound.pan = 0.5;
+                for (int i = lastCounter; i < counter; i++) {
+                    if (ids[i] == id) {
+                        sound.pan = ofMap(mainData[1][i], -180, 180, 0, 1);// / 360.0f + 0.5;
+                        break;
+                    }
+                }
+                if (sound.pan == 10) {
+                    cout << "shit\n";
+                }
+                sampleQueue.push_back(sound);
                 tried++;
 //            cout << "added " << pair.first << endl;
             }
@@ -306,7 +330,7 @@ void ofApp::draw(){
     }
     
     lastId = currentId;
-    
+    lastCounter = counter;
     //printf("tried %d, placed %d\n", tried, placed);
     vector<int> toErase;
     for (auto &pair : samplesToPlay) {
@@ -321,9 +345,19 @@ void ofApp::draw(){
 
     }
     
+    if (sampleQueue.size()) {
+        if (sampleQueue.begin()->sample->hasFinished) {
+            sampleQueue.pop_front();
+        }
+        else {
+            printf("playing %s at %f (%d left)\n", sampleQueue.begin()->name.c_str(), sampleQueue.begin()->pan, int(sampleQueue.size()));
+        }
+    }
+    
+    
     audioMutex.unlock();
     
-    cout << samplesToPlay.size() << " samples to play\n";
+    //cout << samplesToPlay.size() << " samples to play\n";
     
     
 }
@@ -336,6 +370,9 @@ void ofApp::keyPressed(int key){
         counter = -500;
 //        mesh.clear();
         medians.clear();
+        for (auto &pair : audioSamples) {
+            pair.second->reset();
+        }
     }
     
     if (key < '9' && key >= '0') {
@@ -347,6 +384,8 @@ void ofApp::keyPressed(int key){
         timeline.toggleShow();
 
     }
+    if (key == 'g') drawGui = !drawGui;
+    
     if (key == 'z') viewMode = CUMULATIVE;
     else if (key == 'x') viewMode = NEW;
 }
@@ -392,19 +431,32 @@ void ofApp::audioOut( float * output, int bufferSize, int nChannels ) {
     ofScopedLock lock(audioMutex);
     
     static float v;
+    static maxiMix mixer;
+    static double p[2];
+    
+    
     for (int i = 0; i < bufferSize; i++) {
       //  v = sample.playOnce();
         v = 0;
 
-        for (auto &pair : samplesToPlay) {
-            ofxMaxiSample *sample = pair.second;
-            if (sample != NULL) {
-                v+= sample->playOnce() * 0.1;
-            }
+        if (sampleQueue.size()) {
+            v = sampleQueue.begin()->sample->playOnce();
+            mixer.stereo(v*0.7, p, sampleQueue.begin()->pan);
         }
-        //if (samplesToPlay.size() > 0) v = samplesToPlay[0]->playOnce();
         
-        output[i*nChannels] = output[i*nChannels+1]= v;
+        output[i*nChannels] = p[0];
+        output[i*nChannels+1] = p[1];
+        
+//        for (auto &pair : samplesToPlay) {
+////        if (samplesToPlay.size()) {
+////            ofxMaxiSample *sample = samplesToPlay.begin()->second; // pair.second;
+//            ofxMaxiSample *sample = pair.second;
+//            if (sample != NULL) {
+//                v+= sample->playOnce() * 0.5;
+//            }
+//        }
+        //if (samplesToPlay.size() > 0) v = samplesToPlay[0]->playOnce();
+        //output[i*nChannels] = output[i*nChannels+1]= v * 0.6;
     }
 }
 
@@ -413,33 +465,53 @@ void ofApp::audioOut( float * output, int bufferSize, int nChannels ) {
 void ofApp::loadAudio() {
 
     
-    ifstream infile("/Users/itg/Desktop/sound_ids");
+    ifstream infile("/Users/itg/Desktop/sound_ids2");
     string line;
     while(getline(infile, line)) {
         vector<string> parts = ofSplitString(line, ",");
         int id = ofToInt(parts[1]);
         soundIds[id] = parts[0];
     }
-
     
-    string path = "/Users/itg/Desktop/oggs/wavs/44.1k/";
-    DIR *dir;
-    struct dirent *ent;
-    if ((dir = opendir (path.c_str())) != NULL) {
-                while ((ent = readdir (dir)) != NULL) {
-            string file = ent->d_name;
-            if(file.find(".wav")!=-1) {
-                ofxMaxiSample *sample = new maxiSample();
-                sample->load(path + file);
-                audioSamples[file] = sample;
-                
-            }
+    string path = "/Users/itg/Desktop/oggs/wavs/44.1k/short/normalised/";
+
+
+    for (auto &pair : soundIds) {
+        string file = pair.second;
+        
+        string filepath = path + file;
+        ifstream infile(filepath);
+        
+        if (infile.good()) {
+            ofxMaxiSample *sample = new maxiSample();
+            sample->load(path + file);
+            audioSamples[file] = sample;
         }
-        closedir (dir);
-    } else {
-        cout << "Error, could not load directory" << endl;
     }
-    cout << "a" << endl;
+    
+    
+//    DIR *dir;
+//    struct dirent *ent;
+//    if ((dir = opendir (path.c_str())) != NULL) {
+//                while ((ent = readdir (dir)) != NULL) {
+//            string file = ent->d_name;
+//                    string filepath = path + file;
+//                    ifstream infile(filepath);
+//            if(file.find(".wav") !=-1 && infile.good()) {
+//                
+//                
+//                ofxMaxiSample *sample = new maxiSample();
+//                sample->load(path + file);
+//                audioSamples[file] = sample;
+//                
+//            }
+//        }
+//        closedir (dir);
+//    } else {
+//        cout << "Error, could not load directory" << endl;
+//    }
+    cout << "loaded "  << soundIds.size() << endl;
+    cout << "loaded "  << audioSamples.size() << endl;
 }
 
 //--------------------------------------------------------------

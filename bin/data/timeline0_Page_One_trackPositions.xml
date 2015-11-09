@@ -1,7 +1,7 @@
 <positions>
     <element name="blackScreen">
         <x>0.000000000</x>
-        <y>335.000000000</y>
+        <y>308.000000000</y>
         <width>1280.000000000</width>
         <height>40.000000000</height>
     </element>
@@ -9,41 +9,41 @@
         <x>0.000000000</x>
         <y>52.000000000</y>
         <width>1280.000000000</width>
-        <height>67.000000000</height>
+        <height>40.000000000</height>
     </element>
     <element name="sphereness">
         <x>0.000000000</x>
-        <y>399.000000000</y>
+        <y>372.000000000</y>
         <width>1280.000000000</width>
-        <height>57.000000000</height>
+        <height>40.000000000</height>
     </element>
     <element name="x rot">
         <x>0.000000000</x>
-        <y>557.000000000</y>
+        <y>500.000000000</y>
         <width>1280.000000000</width>
         <height>40.000000000</height>
     </element>
     <element name="x trans">
         <x>0.000000000</x>
-        <y>143.000000000</y>
+        <y>116.000000000</y>
         <width>1280.000000000</width>
         <height>40.000000000</height>
     </element>
     <element name="y rot">
         <x>0.000000000</x>
-        <y>480.000000000</y>
+        <y>436.000000000</y>
         <width>1280.000000000</width>
-        <height>53.000000000</height>
+        <height>40.000000000</height>
     </element>
     <element name="y trans">
         <x>0.000000000</x>
-        <y>207.000000000</y>
+        <y>180.000000000</y>
         <width>1280.000000000</width>
         <height>40.000000000</height>
     </element>
     <element name="zoom">
         <x>0.000000000</x>
-        <y>271.000000000</y>
+        <y>244.000000000</y>
         <width>1280.000000000</width>
         <height>40.000000000</height>
     </element>

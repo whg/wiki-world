@@ -151,6 +151,14 @@ public:
     map<string, ofxMaxiSample*> audioSamples;
     map<int, string> soundIds;
     map<int, ofxMaxiSample*> samplesToPlay;
+    
+    struct Sound {
+        ofxMaxiSample *sample;
+        string name;
+        float pan;
+    };
+    
+    deque<Sound> sampleQueue;
 
     void loadAudio();
     
