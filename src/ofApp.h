@@ -154,5 +154,5 @@ public:
 
     void loadAudio();
     
-    
+    ofMutex audioMutex;
 };

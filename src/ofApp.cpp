@@ -114,7 +114,7 @@ void ofApp::setup(){
     
     
     timeline.setup();
-    timeline.setDurationInSeconds(120);
+    timeline.setDurationInSeconds(600);
     timeline.setFrameBased(true);
     timeline.setFrameRate(60);
     timeline.addCurves("counter", ofRange(0, points.size()), 0);
@@ -136,6 +136,9 @@ void ofApp::setup(){
 }
 
 void ofApp::exit() {
+    
+    ofSoundStreamClose();
+    
     for (auto &pair : audioSamples) {
         delete pair.second;
     }
@@ -277,30 +280,51 @@ void ofApp::draw(){
     ofSetColor(255);
     timeline.draw();
     
-    static int lastCounter = 0;
+    static int lastId = 0;
+    
+    audioMutex.lock();
     
     vector<float> &ids = mainData[2];
+    int currentId = ids[counter];
+    
+    printf("looking in between %d : %d", lastId, currentId);
+    
+    
+    int tried = 0, placed = 0;
     for (auto &pair : soundIds) {
         int id = pair.first;
-        if (id < counter) {
+        if (id < currentId && id > lastId) {
             if (audioSamples[pair.second] != NULL && samplesToPlay.count(id) == 0) {
-                samplesToPlay[id] = audioSamples[pair.second];
+                if (ofRandom(100) > 99 || true) {
+                    samplesToPlay[id] = audioSamples[pair.second];
+                    placed++;
+                }
+                tried++;
 //            cout << "added " << pair.first << endl;
             }
         }
     }
     
+    lastId = currentId;
+    
+    //printf("tried %d, placed %d\n", tried, placed);
+    vector<int> toErase;
     for (auto &pair : samplesToPlay) {
         
         if (pair.second == NULL || pair.second->hasFinished) {
-            samplesToPlay.erase(pair.first);
-
+            toErase.push_back(pair.first);
         }
     }
     
+    for (int id : toErase) {
+        samplesToPlay.erase(id);
+
+    }
+    
+    audioMutex.unlock();
+    
     cout << samplesToPlay.size() << " samples to play\n";
     
-    lastCounter = counter;
     
 }
 
@@ -364,6 +388,8 @@ void ofApp::mousePressed(int x, int y, int button){
 }
 
 void ofApp::audioOut( float * output, int bufferSize, int nChannels ) {
+    
+    ofScopedLock lock(audioMutex);
     
     static float v;
     for (int i = 0; i < bufferSize; i++) {
