@@ -46,7 +46,11 @@ void ofApp::setup(){
     
     std::ifstream infile(ofToDataPath("point_file").c_str());
     
-    read_fdata("/Users/itg/Desktop/mysql_wiki_order_id_with_id.fdata", mainData);
+//    read_fdata("/Users/itg/Desktop/pg_wiki_order_id_with_id.fdata", mainData);
+    read_fdata("/Users/itg/Desktop/mysql_wiki_order_id_with_id_primary.fdata", mainData);
+//    read_fdata("/Users/itg/Desktop/mysql_wiki_order_gt_id_with_id.fdata", mainData);
+    
+    
 //    read_fdata("/Users/itg/Desktop/wiki_pages_pg.fdata", mainData);
     
     
@@ -77,7 +81,7 @@ void ofApp::setup(){
     for (int i = 0; i < points.size(); i++) {
 //        vbo.add
 //        vbo.addVertex(points[counter++]);
-        cols[i] = ofFloatColor::fromHsb(i/n, 0.8, 0.6, 0.5);
+        cols[i] = ofFloatColor::fromHsb(i/n, 1.0, 1.0);
     }
     vbo.setColorData(&cols[0], cols.size(), GL_STATIC_DRAW);
     
@@ -93,14 +97,13 @@ void ofApp::setup(){
     panel.add(blackScreen.set("screen", 600, 0, 600));
 
     drawGui = false;
-    blendMode = 1;
     shader.setupShaderFromFile(GL_FRAGMENT_SHADER, ofToDataPath("shader.frag"));
     shader.setupShaderFromFile(GL_VERTEX_SHADER, ofToDataPath("shader.vert"));
     shader.linkProgram();
     
     cam.zoom = 382;
     cam.translation.y = 20;
-    blendMode = OF_BLENDMODE_ADD;
+    blendMode = OF_BLENDMODE_ALPHA;
     
     fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA32F);
     fbo.begin();
@@ -114,10 +117,12 @@ void ofApp::setup(){
     
     
     timeline.setup();
-    timeline.setDurationInSeconds(100);
+    timeline.setDurationInSeconds(105);
     timeline.setFrameBased(false);
     timeline.setFrameRate(60);
+//    timeline.addAudioTrack("/Users/itg/Desktop/wiki_world_soundtrack2.wav");
     timeline.addCurves("counter", ofRange(0, points.size()), 0);
+    timeline.addCurves("crossfader", ofRange(0, 0.7), 0.7);
     timeline.addCurves("x trans", ofRange(-100, 100), 0);
     timeline.addCurves("y trans", ofRange(-25, 25), 0);
     timeline.addCurves("zoom", ofRange(300, 500));
@@ -125,9 +130,13 @@ void ofApp::setup(){
     timeline.addCurves("sphereness", ofRange(0.0, 1.0));
     timeline.addCurves("y rot", ofRange(0, 360));
     timeline.addCurves("x rot", ofRange(-20, 20));
+    timeline.addCurves("general alpha", ofRange(0, 1));
+    timeline.addCurves("blend mode", ofRange(0, 3));
+    timeline.addFlags("asdf");
+    
     
     timeline.setSpacebarTogglePlay(true);
-    timeline.play();
+
     timeline.hide();
 
     counter = 0;
@@ -176,7 +185,7 @@ void ofApp::draw(){
     ofBackground(0);
     
     if (counter < 0) {
-        counter+= 10;
+        counter+= 5;
         return;
     }
     
@@ -185,49 +194,63 @@ void ofApp::draw(){
 //    fbo.begin();
     
     ofEnableAlphaBlending();
-    ofEnableBlendMode(ofBlendMode(blendMode));
+    ofEnableBlendMode(ofBlendMode(int(timeline.getValue("blend mode"))));
 
     cam.begin();
 
     
+    float crossfader = timeline.getValue("crossfader"); //ofMap(mouseX, 0, ofGetWidth(), 0, 1);
+    
+    float faderOne = (0.5 - MIN(crossfader, 0.5)) * 2.0;
+    float faderTwo = (MAX(crossfader, 0.5) - 0.5) * 2.0;
+    cout << faderOne << " : " << faderTwo << endl;
+    
+    if (faderOne > 0) {
     shader.begin();
     //shader.setUniform2f("offset", mouseX, mouseY);
     shader.setUniform2f("window", ofGetWidth(), ofGetHeight());
     shader.setUniform1f("zoom", timeline.getValue("zoom"));
-    
     shader.setUniform1f("blackScreen", timeline.getValue("blackScreen"));
-    
     shader.setUniform1f("q", timeline.getValue("sphereness"));
     shader.setUniform1f("radius", 100);
-    
-//    counter = int(ofMap(mouseX, 0, ofGetWidth(), 0, points.size(), true));
-    
-    //int levels = 50;
-    
-
-
-    
-//    ofSetColor(255, mouseX);
-//    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
     
     counter = timeline.getValue("counter");
     
     
-    if (viewMode == NEW) {
+ //   if (viewMode == NEW) {
         for (int i = 0; i < levels; i++) {
-     //       ofSetColor(255, 0, 150, i/float(levels)*255);
+            ofSetColor(255, 0, 150, i/float(levels)*255);
             vbo.draw(GL_POINTS, MIN(MAX(counter - i * levelAmount, 0), points.size()),  levelAmount);//counter);
         }
-    }
-    shader.setUniform2f("offset", mouseX, 35);
+   // }
+    shader.setUniform2f("offset", mouseX, faderOne);
 
-    if(viewMode == CUMULATIVE) {
-        vbo.draw(GL_POINTS, 0, counter);
+    shader.end();
+        
     }
+    
+    if (faderTwo > 0) {
+    shader.begin();
+    //shader.setUniform2f("offset", mouseX, mouseY);
+    shader.setUniform2f("window", ofGetWidth(), ofGetHeight());
+    shader.setUniform1f("zoom", timeline.getValue("zoom"));
+    shader.setUniform1f("blackScreen", timeline.getValue("blackScreen"));
+    shader.setUniform1f("q", timeline.getValue("sphereness"));
+    shader.setUniform1f("radius", 100);
+    
+    counter = timeline.getValue("counter");
+    
+    
+
+    shader.setUniform2f("offset", mouseX, faderTwo);
+    
+    //if(viewMode == CUMULATIVE) {
+        vbo.draw(GL_POINTS, 0, counter);
+    //}
     
     
     shader.end();
-    
+    }
     
     int start = counter;
     int end = counter+levelAmount;
@@ -258,15 +281,6 @@ void ofApp::draw(){
     }
     
     
-    
-//    medians.addVertex(closest);
-//    
-//    medians.setMode(OF_PRIMITIVE_LINE_STRIP);
-//    medians.drawWireframe();
-    
-   // ofDrawCircle(median.x, median.y, 1);
-//    ofSetColor(255);
-//    vbo.draw(GL_POINTS, MAX(counter, 0),  levelAmount);//counter);
 
 
     cam.end();
@@ -275,8 +289,8 @@ void ofApp::draw(){
 //    fbo.draw(0, 0);
 
 //    ofDrawBitmapString(names[counter], 10, 10);
-    ofSetColor(255);
-    ofDrawBitmapString(ofToString(counter) + " : " + ofToString(points.size()) , 10, 20);
+    ofSetColor(200);
+    ofDrawBitmapString(ofToString(counter/1000) + string("k") , 10, ofGetHeight()-10);
 
     ofDisableDepthTest();
     if (drawGui) panel.draw();
@@ -315,7 +329,8 @@ void ofApp::draw(){
                 sound.pan = 0.5;
                 for (int i = lastCounter; i < counter; i++) {
                     if (ids[i] == id) {
-                        sound.pan = ofMap(mainData[1][i], -180, 180, 0, 1);// / 360.0f + 0.5;
+                        // do a hard pan!
+                        sound.pan = ofMap(mainData[1][i], -180, 180, -0.5, 1.5);// / 360.0f + 0.5;
                         break;
                     }
                 }
@@ -348,9 +363,11 @@ void ofApp::draw(){
     if (sampleQueue.size()) {
         if (sampleQueue.begin()->sample->hasFinished) {
             sampleQueue.pop_front();
+            //printf("playing %s at %f (%d left)\n", sampleQueue.begin()->name.c_str(), sampleQueue.begin()->pan, int(sampleQueue.size()));
+
         }
         else {
-            printf("playing %s at %f (%d left)\n", sampleQueue.begin()->name.c_str(), sampleQueue.begin()->pan, int(sampleQueue.size()));
+//            printf("playing %s at %f (%d left)\n", sampleQueue.begin()->name.c_str(), sampleQueue.begin()->pan, int(sampleQueue.size()));
         }
     }
     

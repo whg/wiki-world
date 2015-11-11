@@ -53,8 +53,9 @@ void main() {
     vec4 col = gl_Color;
     vec4 o =  gl_ProjectionMatrix * gl_ModelViewMatrix * vec4(point, 1.0);
 //    if (o.z > window.y - zoom - 180.0 - 69.0) col*= offset.y;
+
+    col.a = offset.y;
     if (o.z > blackScreen) col*= 0.0;
-    col.a = offset.y / 255.0;
     
     gl_Position =  o;
     gl_FrontColor = col;

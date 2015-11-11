@@ -1,7 +1,25 @@
 <positions>
+    <element name="asdf">
+        <x>0.000000000</x>
+        <y>707.000000000</y>
+        <width>1280.000000000</width>
+        <height>40.000000000</height>
+    </element>
+    <element name="asfd">
+        <x>0.000000000</x>
+        <y>631.000000000</y>
+        <width>1280.000000000</width>
+        <height>26.000000000</height>
+    </element>
     <element name="blackScreen">
         <x>0.000000000</x>
-        <y>308.000000000</y>
+        <y>372.000000000</y>
+        <width>1280.000000000</width>
+        <height>40.000000000</height>
+    </element>
+    <element name="blend mode">
+        <x>0.000000000</x>
+        <y>643.000000000</y>
         <width>1280.000000000</width>
         <height>40.000000000</height>
     </element>
@@ -11,39 +29,51 @@
         <width>1280.000000000</width>
         <height>40.000000000</height>
     </element>
-    <element name="sphereness">
-        <x>0.000000000</x>
-        <y>372.000000000</y>
-        <width>1280.000000000</width>
-        <height>40.000000000</height>
-    </element>
-    <element name="x rot">
-        <x>0.000000000</x>
-        <y>500.000000000</y>
-        <width>1280.000000000</width>
-        <height>40.000000000</height>
-    </element>
-    <element name="x trans">
+    <element name="crossfader">
         <x>0.000000000</x>
         <y>116.000000000</y>
         <width>1280.000000000</width>
         <height>40.000000000</height>
     </element>
-    <element name="y rot">
+    <element name="general alpha">
+        <x>0.000000000</x>
+        <y>608.000000000</y>
+        <width>1280.000000000</width>
+        <height>11.000000000</height>
+    </element>
+    <element name="sphereness">
         <x>0.000000000</x>
         <y>436.000000000</y>
         <width>1280.000000000</width>
         <height>40.000000000</height>
     </element>
-    <element name="y trans">
+    <element name="x rot">
+        <x>0.000000000</x>
+        <y>567.000000000</y>
+        <width>1280.000000000</width>
+        <height>17.000000000</height>
+    </element>
+    <element name="x trans">
         <x>0.000000000</x>
         <y>180.000000000</y>
         <width>1280.000000000</width>
         <height>40.000000000</height>
     </element>
-    <element name="zoom">
+    <element name="y rot">
+        <x>0.000000000</x>
+        <y>500.000000000</y>
+        <width>1280.000000000</width>
+        <height>43.000000000</height>
+    </element>
+    <element name="y trans">
         <x>0.000000000</x>
         <y>244.000000000</y>
+        <width>1280.000000000</width>
+        <height>40.000000000</height>
+    </element>
+    <element name="zoom">
+        <x>0.000000000</x>
+        <y>308.000000000</y>
         <width>1280.000000000</width>
         <height>40.000000000</height>
     </element>

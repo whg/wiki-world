@@ -87,6 +87,7 @@
 		72DD5B7C1BEA21BE00C1C9E3 /* audiodecodercoreaudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72DD5B741BEA21BE00C1C9E3 /* audiodecodercoreaudio.cpp */; };
 		72DD5B7D1BEA21BE00C1C9E3 /* license.md in Sources */ = {isa = PBXBuildFile; fileRef = 72DD5B751BEA21BE00C1C9E3 /* license.md */; };
 		72DD5B7E1BEA21BE00C1C9E3 /* readme.md in Sources */ = {isa = PBXBuildFile; fileRef = 72DD5B761BEA21BE00C1C9E3 /* readme.md */; };
+		72E06E2C1BF36C1900964417 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E06E2B1BF36C1900964417 /* OpenAL.framework */; };
 		72E8C1841BECD9D800773E8D /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72E8C1711BECD9D800773E8D /* fft.cpp */; };
 		72E8C1851BECD9D800773E8D /* maxiAtoms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72E8C1731BECD9D800773E8D /* maxiAtoms.cpp */; };
 		72E8C1861BECD9D800773E8D /* maxiBark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72E8C1751BECD9D800773E8D /* maxiBark.cpp */; };
@@ -322,6 +323,7 @@
 		72DD5B751BEA21BE00C1C9E3 /* license.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = license.md; sourceTree = "<group>"; };
 		72DD5B761BEA21BE00C1C9E3 /* readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
 		72DD5B781BEA21BE00C1C9E3 /* ofxAudioDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxAudioDecoder.h; sourceTree = "<group>"; };
+		72E06E2B1BF36C1900964417 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/System/Library/Frameworks/OpenAL.framework; sourceTree = DEVELOPER_DIR; };
 		72E8C16F1BECD9D800773E8D /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = install.xml; sourceTree = "<group>"; };
 		72E8C1711BECD9D800773E8D /* fft.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fft.cpp; sourceTree = "<group>"; };
 		72E8C1721BECD9D800773E8D /* fft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fft.h; sourceTree = "<group>"; };
@@ -372,6 +374,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				72E06E2C1BF36C1900964417 /* OpenAL.framework in Frameworks */,
 				6474CBF619BCE019003C94E2 /* AVFoundation.framework in Frameworks */,
 				72DD5B531BEA217500C1C9E3 /* EFX-Util.lib in Frameworks */,
 				72DD5B521BEA217500C1C9E3 /* libOpenAL32.dll.a in Frameworks */,
@@ -1147,6 +1150,7 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
+				72E06E2B1BF36C1900964417 /* OpenAL.framework */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
