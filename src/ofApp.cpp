@@ -2,56 +2,15 @@
 
 #include "fdata.h"
 
-// trim from start
-static inline std::string &ltrim(std::string &s) {
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
-    return s;
-}
-
-// trim from end
-static inline std::string &rtrim(std::string &s) {
-    s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
-    return s;
-}
-
-// trim from both ends
-static inline std::string &trim(std::string &s) {
-    return ltrim(rtrim(s));
-}
-
-
-int counter = 0;
-
-float HC = 180.0/PI;
-float QP = PI/4.0;
-float QC = PI / 360.0;
-
-float lat2y(float a) {
-    return HC * log(tan(QP + a * QC));
-}
-
-
-
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    ofBackground(255);
-    
-    int maj, min;
-    glGetIntegerv(GL_MAJOR_VERSION, &maj);
-    glGetIntegerv(GL_MINOR_VERSION, &min);
-    printf("OpenGL version %d.%d\n", maj, min);
-    cout << glGetString(GL_VERSION) << endl;
-//    ofExit();
-    
-    std::ifstream infile(ofToDataPath("point_file").c_str());
+
     
 //    read_fdata("/Users/itg/Desktop/pg_wiki_order_id_with_id.fdata", mainData);
     read_fdata("/Users/itg/Desktop/mysql_wiki_order_id_with_id_primary.fdata", mainData);
 //    read_fdata("/Users/itg/Desktop/mysql_wiki_order_gt_id_with_id.fdata", mainData);
     
-    
-//    read_fdata("/Users/itg/Desktop/wiki_pages_pg.fdata", mainData);
     
     
     int num = mainData[0].size();
@@ -64,14 +23,10 @@ void ofApp::setup(){
         
         points[i].x = mainData[1][i];
         points[i].y = (mainData[0][i]);
-//        points[i].x = mainData[0][i];
-//        points[i].y = (mainData[1][i]);
+
     }
     
-    cam.setPosition(0, 0, 700);
-//    cam.setPosition(-192.449539, 84.9406509, 84.6877899);
-//    cam.setTranslationKey('t');
-    
+
     ofSetVerticalSync(true);
 //    ofSetFrameRate(60);
   
@@ -79,8 +34,6 @@ void ofApp::setup(){
     cols.resize(points.size());
     float n = points.size();
     for (int i = 0; i < points.size(); i++) {
-//        vbo.add
-//        vbo.addVertex(points[counter++]);
         cols[i] = ofFloatColor::fromHsb(i/n, 1.0, 1.0);
     }
     vbo.setColorData(&cols[0], cols.size(), GL_STATIC_DRAW);
@@ -110,8 +63,7 @@ void ofApp::setup(){
     ofClear(0);
     fbo.end();
     
-//    ofSetBackgroundAuto(false);
-//    ofBackground(0);
+
     lastPoint = points[0];
     viewMode = CUMULATIVE;
     
@@ -120,7 +72,6 @@ void ofApp::setup(){
     timeline.setDurationInSeconds(105);
     timeline.setFrameBased(false);
     timeline.setFrameRate(60);
-//    timeline.addAudioTrack("/Users/itg/Desktop/wiki_world_soundtrack2.wav");
     timeline.addCurves("counter", ofRange(0, points.size()), 0);
     timeline.addCurves("crossfader", ofRange(0, 0.7), 0.7);
     timeline.addCurves("x trans", ofRange(-100, 100), 0);
@@ -138,8 +89,6 @@ void ofApp::setup(){
     timeline.setSpacebarTogglePlay(true);
 
     timeline.hide();
-
-    counter = 0;
     
     loadAudio();
     
@@ -189,9 +138,7 @@ void ofApp::draw(){
         return;
     }
     
-    //ofEnableDepthTest();
-    
-//    fbo.begin();
+
     
     ofEnableAlphaBlending();
     ofEnableBlendMode(ofBlendMode(int(timeline.getValue("blend mode"))));
@@ -206,89 +153,75 @@ void ofApp::draw(){
     cout << faderOne << " : " << faderTwo << endl;
     
     if (faderOne > 0) {
-    shader.begin();
-    //shader.setUniform2f("offset", mouseX, mouseY);
-    shader.setUniform2f("window", ofGetWidth(), ofGetHeight());
-    shader.setUniform1f("zoom", timeline.getValue("zoom"));
-    shader.setUniform1f("blackScreen", timeline.getValue("blackScreen"));
-    shader.setUniform1f("q", timeline.getValue("sphereness"));
-    shader.setUniform1f("radius", 100);
-    
-    counter = timeline.getValue("counter");
-    
-    
- //   if (viewMode == NEW) {
+        shader.begin();
+        shader.setUniform2f("window", ofGetWidth(), ofGetHeight());
+        shader.setUniform1f("zoom", timeline.getValue("zoom"));
+        shader.setUniform1f("blackScreen", timeline.getValue("blackScreen"));
+        shader.setUniform1f("q", timeline.getValue("sphereness"));
+        shader.setUniform1f("radius", 100);
+        
+        counter = timeline.getValue("counter");
+        
+        
         for (int i = 0; i < levels; i++) {
             ofSetColor(255, 0, 150, i/float(levels)*255);
             vbo.draw(GL_POINTS, MIN(MAX(counter - i * levelAmount, 0), points.size()),  levelAmount);//counter);
         }
-   // }
-    shader.setUniform2f("offset", mouseX, faderOne);
+        shader.setUniform2f("offset", mouseX, faderOne);
 
-    shader.end();
+        shader.end();
         
     }
     
     if (faderTwo > 0) {
-    shader.begin();
-    //shader.setUniform2f("offset", mouseX, mouseY);
-    shader.setUniform2f("window", ofGetWidth(), ofGetHeight());
-    shader.setUniform1f("zoom", timeline.getValue("zoom"));
-    shader.setUniform1f("blackScreen", timeline.getValue("blackScreen"));
-    shader.setUniform1f("q", timeline.getValue("sphereness"));
-    shader.setUniform1f("radius", 100);
-    
-    counter = timeline.getValue("counter");
-    
-    
+        shader.begin();
+        shader.setUniform2f("window", ofGetWidth(), ofGetHeight());
+        shader.setUniform1f("zoom", timeline.getValue("zoom"));
+        shader.setUniform1f("blackScreen", timeline.getValue("blackScreen"));
+        shader.setUniform1f("q", timeline.getValue("sphereness"));
+        shader.setUniform1f("radius", 100);
+        
+        counter = timeline.getValue("counter");
 
-    shader.setUniform2f("offset", mouseX, faderTwo);
-    
-    //if(viewMode == CUMULATIVE) {
+        shader.setUniform2f("offset", mouseX, faderTwo);
+        
         vbo.draw(GL_POINTS, 0, counter);
-    //}
-    
-    
-    shader.end();
+        
+        shader.end();
     }
     
-    int start = counter;
-    int end = counter+levelAmount;
-    
-    vector<ofVec3f> part;
-    part.resize(levelAmount);
-    copy(points.begin()+counter, points.begin()+counter+levelAmount, part.begin());
-    sort(part.begin(), part.end(), ofVec3fSort);
-    
-    ofVec3f sum;
-    for (int i = start; i < end; i++) {
-        sum+= points[i];
-    }
-    
-    sum /= levelAmount;
-    ofSetColor(255, 0, 150, mouseX);
-//    cout << part.size() << endl;
-    ofVec3f median = part[part.size()/2];
-    
-    float mindist = 10000;
-    ofVec3f closest;
-    for (auto &p : part) {
-        float d = lastPoint.distance(p);
-        if (d < mindist) {
-            closest = p;
-            mindist = d;
-        }
-    }
-    
-    
-
+//    int start = counter;
+//    int end = counter+levelAmount;
+//    
+//    vector<ofVec3f> part;
+//    part.resize(levelAmount);
+//    copy(points.begin()+counter, points.begin()+counter+levelAmount, part.begin());
+//    sort(part.begin(), part.end(), ofVec3fSort);
+//    
+//    ofVec3f sum;
+//    for (int i = start; i < end; i++) {
+//        sum+= points[i];
+//    }
+//    
+//    sum /= levelAmount;
+//    ofSetColor(255, 0, 150, mouseX);
+////    cout << part.size() << endl;
+//    ofVec3f median = part[part.size()/2];
+//    
+//    float mindist = 10000;
+//    ofVec3f closest;
+//    for (auto &p : part) {
+//        float d = lastPoint.distance(p);
+//        if (d < mindist) {
+//            closest = p;
+//            mindist = d;
+//        }
+//    }
+//    
 
     cam.end();
     
-//    fbo.end();
-//    fbo.draw(0, 0);
 
-//    ofDrawBitmapString(names[counter], 10, 10);
     ofSetColor(200);
     ofDrawBitmapString(ofToString(counter/1000) + string("k") , 10, ofGetHeight()-10);
 
@@ -305,7 +238,6 @@ void ofApp::draw(){
     vector<float> &ids = mainData[2];
     int currentId = ids[counter];
     
-    //printf("looking in between %d : %d\n", lastId, currentId);
     
     static float timeNow, addedAt = 0;
     timeNow = ofGetElapsedTimef();
@@ -315,14 +247,15 @@ void ofApp::draw(){
         int id = pair.first;
         if (id < currentId && id > lastId) {
             if (audioSamples.count(pair.second) > 0 && samplesToPlay.count(id) == 0) {
-                if (timeNow - addedAt > 0.4) {
-                    samplesToPlay[id] = audioSamples[pair.second];
-                    //cout << timeNow << " - " << addedAt << endl;
-                    placed++;
-                    addedAt = timeNow;
-                    //cout << timeNow << " - " << addedAt << endl;
-
-                }
+//                if (timeNow - addedAt > 0.4) {
+//                    samplesToPlay[id] = audioSamples[pair.second];
+//                    //cout << timeNow << " - " << addedAt << endl;
+//                    placed++;
+//                    addedAt = timeNow;
+//                    //cout << timeNow << " - " << addedAt << endl;
+//
+//                }
+//                
                 Sound sound;
                 sound.sample = audioSamples[pair.second];
                 sound.name = pair.second;
@@ -339,14 +272,12 @@ void ofApp::draw(){
                 }
                 sampleQueue.push_back(sound);
                 tried++;
-//            cout << "added " << pair.first << endl;
             }
         }
     }
     
     lastId = currentId;
     lastCounter = counter;
-    //printf("tried %d, placed %d\n", tried, placed);
     vector<int> toErase;
     for (auto &pair : samplesToPlay) {
         
@@ -363,18 +294,13 @@ void ofApp::draw(){
     if (sampleQueue.size()) {
         if (sampleQueue.begin()->sample->hasFinished) {
             sampleQueue.pop_front();
-            //printf("playing %s at %f (%d left)\n", sampleQueue.begin()->name.c_str(), sampleQueue.begin()->pan, int(sampleQueue.size()));
 
-        }
-        else {
-//            printf("playing %s at %f (%d left)\n", sampleQueue.begin()->name.c_str(), sampleQueue.begin()->pan, int(sampleQueue.size()));
         }
     }
     
     
     audioMutex.unlock();
     
-    //cout << samplesToPlay.size() << " samples to play\n";
     
     
 }
@@ -385,7 +311,6 @@ void ofApp::keyPressed(int key){
 
     if (key == 'r') {
         counter = -500;
-//        mesh.clear();
         medians.clear();
         for (auto &pair : audioSamples) {
             pair.second->reset();
@@ -397,7 +322,6 @@ void ofApp::keyPressed(int key){
     }
 
     if (key == 't') {
-//        drawGui = !drawGui;
         timeline.toggleShow();
 
     }
@@ -432,14 +356,11 @@ void ofApp::mousePressed(int x, int y, int button){
         float n = points.size();
         
         for (int i = 0; i < points.size(); i++) {
-            //        vbo.add
-            //        vbo.addVertex(points[counter++]);
-            cols[i] = ofFloatColor::fromHsb(i/n, 0.8, 0.6, float(mouseX)/ofGetWidth());
+             cols[i] = ofFloatColor::fromHsb(i/n, 0.8, 0.6, float(mouseX)/ofGetWidth());
         }
         vbo.setColorData(&cols[0], cols.size(), GL_STATIC_DRAW);
     }
     
-   // sample.reset();
 
 }
 
@@ -464,16 +385,6 @@ void ofApp::audioOut( float * output, int bufferSize, int nChannels ) {
         output[i*nChannels] = p[0];
         output[i*nChannels+1] = p[1];
         
-//        for (auto &pair : samplesToPlay) {
-////        if (samplesToPlay.size()) {
-////            ofxMaxiSample *sample = samplesToPlay.begin()->second; // pair.second;
-//            ofxMaxiSample *sample = pair.second;
-//            if (sample != NULL) {
-//                v+= sample->playOnce() * 0.5;
-//            }
-//        }
-        //if (samplesToPlay.size() > 0) v = samplesToPlay[0]->playOnce();
-        //output[i*nChannels] = output[i*nChannels+1]= v * 0.6;
     }
 }
 
@@ -506,29 +417,7 @@ void ofApp::loadAudio() {
         }
     }
     
-    
-//    DIR *dir;
-//    struct dirent *ent;
-//    if ((dir = opendir (path.c_str())) != NULL) {
-//                while ((ent = readdir (dir)) != NULL) {
-//            string file = ent->d_name;
-//                    string filepath = path + file;
-//                    ifstream infile(filepath);
-//            if(file.find(".wav") !=-1 && infile.good()) {
-//                
-//                
-//                ofxMaxiSample *sample = new maxiSample();
-//                sample->load(path + file);
-//                audioSamples[file] = sample;
-//                
-//            }
-//        }
-//        closedir (dir);
-//    } else {
-//        cout << "Error, could not load directory" << endl;
-//    }
-    cout << "loaded "  << soundIds.size() << endl;
-    cout << "loaded "  << audioSamples.size() << endl;
+
 }
 
 //--------------------------------------------------------------

@@ -25,17 +25,6 @@ public:
             translation+= mouseDiff;
         }
         
-//        if (firstDrag) {
-//            if (abs(mouseDiff.x) > abs(mouseDiff.y)) {
-//                rotationDirection = X;
-//            }
-//            else {
-//                rotationDirection = Y;
-//            }
-//            //rotation = ofVec2f();
-//            firstDrag = false;
-//        }
-        
         else {
             rotation.y+= mouseDiff.x; 
             rotation.x-= mouseDiff.y;
@@ -68,16 +57,9 @@ public:
         glPushMatrix();
         glTranslatef(ofGetWidth() * 0.5 + translation.x, ofGetHeight() * 0.5 + translation.y, zoom);
         
-//        if (rotationDirection == X) {
         glRotatef(rotation.x, 1, 0, 0);
+        glRotatef(rotation.y, 0, 1, 0);
 
-            glRotatef(rotation.y, 0, 1, 0);
-//        }
-//        else if (rotationDirection == Y) {
-//            glRotatef(rotation.x, 1, 0, 0);
-//            glRotatef(rotation.y, 0, 1, 0);
-//        }
-        
         glScalef(1, -1, 1);
         
     }
@@ -127,7 +109,7 @@ public:
     
     vector< vector<float> > mainData;
 
-    
+    int counter;
     ofVbo vbo;
     Cam cam;
     int blendMode;
@@ -141,7 +123,6 @@ public:
     
     ofFbo fbo;
     
-//    deque<ofVec3f> medians;
     ofVec3f lastPoint;
     ofMesh medians;
     ViewMode viewMode;
